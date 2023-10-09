@@ -1,17 +1,25 @@
 import socket
 
-# Створення TCP-клієнта
+HOST = "127.0.0.1"
+PORT = 4000
+
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('127.0.0.1', 12345))  # Підключення до сервера за адресою 127.0.0.1:12345
 
-# Введення тексту від користувача
-message = input("Введіть текст для відправки на сервер: ")
+client_socket.connect((HOST, PORT))
 
-# Надсилання даних на сервер
-client_socket.send(message.encode())
+while True:
+    print("\n----------------------------\n")
+    message = input("Input your message ('CLOSE' to exit) >>> ")
 
-# Отримання відповіді від сервера
-response = client_socket.recv(1024).decode()
-print(f"Відповідь від сервера: {response}")
+    client_socket.send(message.encode())
+    print("The message was sent")
 
-client_socket.close()  # Закриття з'єднання
+    if message.upper() == "CLOSE":
+        break
+
+    echo_message = client_socket.recv(1024)
+
+    print(f"[Echo message] - {echo_message.decode()}")
+    print("\n----------------------------\n")
+
+client_socket.close()
